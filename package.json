@@ -1,0 +1,15 @@
+{
+  "name": "snip-cli",
+  "version": "1.0.0",
+  "description": "Snip - tiny URL shortener CLI",
+  "bin": {
+    "snip": "cli.js"
+  },
+  "scripts": {
+    "test": "node cli.js help"
+  },
+  "keywords": ["url", "shortener", "cli"],
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
