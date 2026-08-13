@@ -80,8 +80,45 @@ Two commits: one inside the layer, one bumping the pointer on `main`. This keeps
 - Plain clones leave submodules empty—always use `--recurse-submodules`
 - The superproject is a pinned snapshot; update it deliberately, never accidentally
 
+## Building the Release Bundle
+
+The `bundle` branch is a generated release combining the server, built UI, and CLI:
+
+```bash
+node scripts/build-bundle.mjs        # Assemble without pushing
+node scripts/build-bundle.mjs --push # Assemble and push to GitHub
+```
+
+The script:
+1. Updates all submodules to their branch tips
+2. Builds the Angular frontend
+3. Copies backend (server.js) and CLI to bundle/
+4. Copies the built UI to bundle/public/
+5. Writes Dockerfile, .env, package.json, railway.json
+6. Commits inside bundle/ (guarded for idempotency)
+7. Bumps the pointer on main and pushes if `--push` is passed
+
+**Idempotent:** Running it again when nothing changed exits cleanly without committing.
+
+## Testing
+
+```bash
+# Terminal 1: Backend
+cd backend && bun start
+
+# Terminal 2: Frontend  
+cd frontend && npx ng serve
+
+# Terminal 3: CLI
+cd cli && node cli.js ls
+```
+
+Or run the bundle as one unified process:
+```bash
+cd bundle && bun start
+```
+
 ## Next Steps
 
 - See [docs/railway-deployment.md](docs/railway-deployment.md) to ship Snip online
-- Build a release branch (`bundle`) that combines backend + built frontend + CLI
-- Add GitHub Actions CI to rebuild the bundle on a schedule or on frontend/backend pushes
+- Add GitHub Actions CI to rebuild the bundle on a schedule
