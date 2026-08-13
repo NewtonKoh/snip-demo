@@ -13,8 +13,8 @@ function log(msg) {
 
 function run(cmd, options = {}) {
   try {
-    const output = execSync(cmd, { encoding: 'utf8', stdio: 'pipe', ...options });
-    return output.trim();
+    const result = execSync(cmd, { encoding: 'utf8', ...options });
+    return result ? result.trim() : '';
   } catch (error) {
     log(`Command failed: ${cmd}`);
     log(error.message);
